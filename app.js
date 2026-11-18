@@ -139,3 +139,55 @@ $("runWhatIf").addEventListener("click",async()=>{
 $("mobileMenu").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
 document.querySelectorAll(".nav-link").forEach(a=>a.addEventListener("click",()=>{$("sidebar").classList.remove("open");document.querySelectorAll(".nav-link").forEach(n=>n.classList.remove("active"));a.classList.add("active");}));
 loadData().catch(e=>toast(e.message));
+
+// Household profile: saved in this browser for this local workspace.
+const accountModal = $("accountModal");
+function applyHouseholdProfile() {
+  const savedName = localStorage.getItem("wattwise_household_name") || "Household account";
+  $("accountNameLabel").textContent = savedName;
+  const initials = savedName.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0].toUpperCase()).join("") || "WW";
+  $("accountAvatar").textContent = initials;
+  $("householdName").value = savedName === "Household account" ? "" : savedName;
+  $("topHouseholdName")?.replaceChildren(document.createTextNode(savedName));
+}
+function openAccount() {
+  applyHouseholdProfile();
+  accountModal.classList.add("show");
+}
+function closeAccount() { accountModal.classList.remove("show"); }
+$("accountButton").addEventListener("click", openAccount);
+$("closeAccount").addEventListener("click", closeAccount);
+$("cancelAccount").addEventListener("click", closeAccount);
+accountModal.addEventListener("click", event => { if (event.target === accountModal) closeAccount(); });
+$("accountForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const name = $("householdName").value.trim();
+  if (!name) return;
+  localStorage.setItem("wattwise_household_name", name);
+  applyHouseholdProfile();
+  closeAccount();
+  toast("Household profile updated.");
+});
+$("workspaceLink").addEventListener("click", () => {
+  document.querySelectorAll(".nav-link").forEach(link => link.classList.remove("active"));
+  document.querySelector('.nav-link[href="#dashboard"]')?.classList.add("active");
+  $("sidebar").classList.remove("open");
+});
+applyHouseholdProfile();
+
+
+// Local data status panel: clearly distinguishes saved estimates from live hardware readings.
+const dataModal = $("dataModal");
+function openDataStatus(){ dataModal.classList.add("show"); }
+function closeDataStatus(){ dataModal.classList.remove("show"); }
+$("localDataButton").addEventListener("click", openDataStatus);
+$("closeData").addEventListener("click", closeDataStatus);
+$("closeDataBottom").addEventListener("click", closeDataStatus);
+dataModal.addEventListener("click", event=>{if(event.target===dataModal)closeDataStatus();});
+$("refreshData").addEventListener("click", async()=>{
+  try {
+    await loadData();
+    closeDataStatus();
+    toast("Dashboard data refreshed.");
+  } catch(error) { toast(error.message); }
+});
