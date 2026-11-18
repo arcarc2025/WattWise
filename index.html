@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WattWise | Energy Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#"><span class="brand-mark">W</span><span>Watt<span class="brand-light">Wise</span><small>ENERGY MANAGEMENT</small></span></a>
+    <div class="side-label">WORKSPACE</div>
+    <nav>
+      <a class="nav-link active" href="#dashboard"><span class="nav-icon">▦</span> Overview</a>
+      <a class="nav-link" href="#appliances"><span class="nav-icon">▤</span> Appliances</a>
+      <a class="nav-link" href="#analysis"><span class="nav-icon">⌁</span> Usage analysis</a>
+      <a class="nav-link" href="#whatif"><span class="nav-icon">↗</span> What-If analysis</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="help-card"><div class="help-icon">✦</div><strong>Save more energy</strong><p>Small changes in daily habits can make a difference.</p><a href="#whatif">Explore savings <span>→</span></a></div>
+      <div class="profile"><div class="avatar">WW</div><div><strong>Household account</strong><small>Local workspace</small></div><span class="profile-dots">•••</span></div>
+    </div>
+  </aside>
+
+  <main class="main-content" id="dashboard">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobileMenu" aria-label="Toggle menu">☰</button>
+      <div class="breadcrumb">Workspace <span>/</span> <strong>Overview</strong></div>
+      <div class="top-actions"><span class="status-dot"></span><span class="live-label">LOCAL DATA</span><div class="top-avatar">H</div></div>
+    </header>
+
+    <section class="page-heading">
+      <div><div class="eyebrow">HOUSEHOLD ENERGY OVERVIEW</div><h1>Good day! <span class="wave">✦</span></h1><p>Here’s your electricity consumption at a glance.</p></div>
+      <button class="button button-primary" id="openAdd"><span>＋</span> Add appliance</button>
+    </section>
+
+    <section class="metric-grid">
+      <article class="metric-card metric-featured"><div class="metric-top"><span>Total monthly usage</span><span class="metric-icon">ϟ</span></div><div class="metric-value"><span id="totalKwh">245.40</span><small>kWh</small></div><div class="metric-foot"><span class="trend-pill">30-day estimate</span><span class="muted">Based on registered appliances</span></div><div class="feature-decoration"></div></article>
+      <article class="metric-card"><div class="metric-top"><span>Estimated monthly bill</span><span class="metric-icon pale">₱</span></div><div class="metric-value dark-value">₱<span id="totalCost">2,944.80</span></div><div class="metric-foot"><span class="muted">At your electricity rate</span></div></article>
+      <article class="metric-card"><div class="metric-top"><span>Monthly budget</span><span class="metric-icon pale">◎</span></div><div class="metric-value dark-value">₱<span id="budgetValue">3,000.00</span></div><div class="progress-track"><div class="progress-fill" id="budgetProgress"></div></div><div class="metric-foot"><span id="budgetPercent">98.2% used</span><span class="muted">of budget</span></div></article>
+      <article class="metric-card"><div class="metric-top"><span>Budget remaining</span><span class="metric-icon pale">↗</span></div><div class="metric-value dark-value" id="remainingValue">₱55.20</div><div class="metric-foot"><span class="status-text" id="budgetStatus">Within your monthly budget</span></div></article>
+    </section>
+
+    <section class="content-grid" id="analysis">
+      <article class="panel usage-panel">
+        <div class="panel-heading"><div><div class="eyebrow">CONSUMPTION BREAKDOWN</div><h2>Appliance usage</h2><p>Monthly electricity consumption by appliance</p></div><span class="period-tag">30 DAYS</span></div>
+        <div id="usageBars" class="usage-bars"></div>
+        <div class="chart-footer"><span><i class="legend-dot"></i> Monthly kWh consumption</span><span id="applianceCount">4 appliances registered</span></div>
+      </article>
+      <article class="panel settings-panel">
+        <div class="panel-heading"><div><div class="eyebrow">BILLING SETTINGS</div><h2>Electricity rate</h2><p>Set your local cost per kWh</p></div><span class="settings-symbol">⚙</span></div>
+        <label class="field-label" for="rateInput">Rate per kWh <span>PHP</span></label>
+        <div class="input-with-prefix"><span>₱</span><input id="rateInput" type="number" min="0" step="0.01" value="12"></div>
+        <label class="field-label budget-label" for="budgetInput">Monthly budget <span>PHP</span></label>
+        <div class="input-with-prefix"><span>₱</span><input id="budgetInput" type="number" min="0" step="0.01" value="3000"></div>
+        <button class="button button-dark full-button" id="saveSettings">Save billing settings <span>→</span></button>
+        <div class="settings-note"><span>ⓘ</span> Estimates use a 30-day billing period.</div>
+      </article>
+    </section>
+
+    <section class="panel appliance-panel" id="appliances">
+      <div class="panel-heading appliance-heading"><div><div class="eyebrow">YOUR HOUSEHOLD DEVICES</div><h2>Registered appliances</h2><p>Sorted by highest monthly energy consumption</p></div><button class="button button-outline" id="tableAdd">＋ Add appliance</button></div>
+      <div class="table-wrap"><table><thead><tr><th>APPLIANCE</th><th>POWER RATING</th><th>HOURS / DAY</th><th>MONTHLY USAGE</th><th>EST. MONTHLY COST</th><th></th></tr></thead><tbody id="applianceRows"></tbody></table></div>
+      <div class="table-bottom"><span id="tableCount">Showing 4 appliances</span><span>Calculation: (Watts × Hours ÷ 1,000) × 30</span></div>
+    </section>
+
+    <section class="panel whatif-panel" id="whatif">
+      <div class="whatif-copy"><div class="eyebrow">SMART SAVINGS TOOL</div><h2>What if you used less?</h2><p>Adjust an appliance’s daily operating hours and see how much you could save on your monthly bill.</p><div class="whatif-tip"><span>✦</span> Try reducing your air conditioner usage by 2 hours.</div></div>
+      <div class="whatif-controls">
+        <label class="field-label" for="whatIfAppliance">Select appliance</label><select id="whatIfAppliance"></select>
+        <label class="field-label" for="whatIfHours">New daily usage <strong><span id="hoursDisplay">4</span> hours</strong></label>
+        <input type="range" id="whatIfHours" min="0" max="24" step="0.5" value="4">
+        <div class="range-labels"><span>0 hours</span><span>24 hours</span></div>
+        <button class="button button-primary full-button" id="runWhatIf">Calculate potential savings <span>→</span></button>
+      </div>
+      <div class="savings-result" id="savingsResult"><div class="result-label">POTENTIAL MONTHLY SAVINGS</div><div class="savings-amount" id="savingsAmount">₱720.00</div><p id="savingsDescription">Your estimated bill could be reduced.</p><div class="result-divider"></div><div class="result-line"><span>Projected monthly bill</span><strong id="projectedCost">₱2,224.80</strong></div></div>
+    </section>
+    <footer>WattWise <span>•</span> Household Electricity Consumption Analysis and Optimization System <span class="footer-right">ESTIMATES ONLY</span></footer>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="applianceModal">
+  <div class="modal">
+    <div class="modal-heading"><div><div class="eyebrow">HOUSEHOLD DEVICE</div><h2 id="modalTitle">Add appliance</h2><p>Enter the appliance's power rating and average daily usage.</p></div><button class="close-modal" id="closeModal">×</button></div>
+    <form id="applianceForm">
+      <input type="hidden" id="editId">
+      <label class="field-label" for="applianceName">Appliance name</label><input class="form-input" id="applianceName" placeholder="e.g. Washing Machine" required maxlength="60">
+      <div class="form-two"><div><label class="field-label" for="applianceWatts">Power rating (watts)</label><input class="form-input" id="applianceWatts" type="number" min="0.1" step="0.1" placeholder="e.g. 500" required></div><div><label class="field-label" for="applianceHours">Hours per day</label><input class="form-input" id="applianceHours" type="number" min="0" max="24" step="0.5" placeholder="e.g. 4" required></div></div>
+      <div class="form-hint">Use the wattage printed on the appliance label or manual.</div>
+      <div class="modal-actions"><button type="button" class="button button-outline" id="cancelModal">Cancel</button><button class="button button-primary" type="submit" id="submitAppliance">Save appliance <span>→</span></button></div>
+      <div class="form-error" id="formError"></div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
