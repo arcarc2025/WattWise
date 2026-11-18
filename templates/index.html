@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WattWise | Energy Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#"><span class="brand-mark">W</span><span>Watt<span class="brand-light">Wise</span><small>ENERGY MANAGEMENT</small></span></a>
+    <a class="side-label workspace-link" href="#dashboard" id="workspaceLink"><span class="workspace-symbol">⌂</span> WORKSPACE <span class="workspace-arrow">↗</span></a>
+    <nav>
+      <a class="nav-link active" href="#dashboard"><span class="nav-icon">▦</span> Overview</a>
+      <a class="nav-link" href="#appliances"><span class="nav-icon">▤</span> Appliances</a>
+      <a class="nav-link" href="#analysis"><span class="nav-icon">⌁</span> Usage analysis</a>
+      <a class="nav-link" href="#whatif"><span class="nav-icon">↗</span> What-If analysis</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="help-card">
+        <div class="help-icon">✦</div>
+        <strong>Save more energy</strong>
+        <p>Small changes in daily habits can make a difference.</p>
+        <a href="#whatif">Explore savings <span>→</span></a>
+      </div>
+      <button class="profile" id="accountButton" type="button">
+        <div class="avatar" id="accountAvatar">WW</div>
+        <div class="profile-copy">
+          <strong id="accountNameLabel">Household account</strong>
+          <small>Manage household</small>
+        </div>
+        <span class="profile-dots">↗</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content" id="dashboard">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobileMenu" aria-label="Toggle menu">☰</button>
+      <div class="breadcrumb">Workspace <span>/</span> <strong>Overview</strong></div>
+      <div class="top-actions">
+        <button class="data-status-button" id="localDataButton" type="button" aria-label="Open data status">
+          <span class="status-dot"></span>
+          <span class="live-label">ACCOUNT DATA</span>
+          <span class="data-chevron">⌄</span>
+        </button>
+        <div class="top-avatar">H</div>
+      </div>
+    </header>
+
+    <section class="page-heading">
+      <div>
+        <div class="eyebrow">HOUSEHOLD ENERGY OVERVIEW</div>
+        <h1>Good day! <span class="wave">✦</span></h1>
+        <p>Here’s your electricity consumption at a glance.</p>
+        <div class="heading-meta">
+          <span class="meta-pulse"></span>
+          Your energy workspace
+          <span class="meta-divider">•</span>
+          30-day overview
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-orbit orbit-one"></div>
+        <div class="hero-orbit orbit-two"></div>
+        <div class="hero-glow"></div>
+        <svg viewBox="0 0 220 150" role="img">
+          <path d="M26 72 108 16l82 56v60H26Z" fill="#eaf4df"/>
+          <path d="m16 75 92-63 92 63" fill="none" stroke="#6d9e45" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M47 79h122v53H47Z" fill="#fff" stroke="#c9dfb5" stroke-width="2"/>
+          <path d="M91 94h34v38H91Z" fill="#9cc875"/>
+          <rect x="57" y="91" width="23" height="21" rx="3" fill="#d7eac8"/>
+          <rect x="139" y="91" width="20" height="21" rx="3" fill="#d7eac8"/>
+          <path d="M108 35 97 59h15l-7 20 25-31h-16l8-13Z" fill="#8ac63f"/>
+          <circle cx="184" cy="28" r="9" fill="#a6d56f"/>
+          <circle cx="34" cy="38" r="5" fill="#c5dfaa"/>
+        </svg>
+        <span class="hero-art-label">SMARTER ENERGY</span>
+      </div>
+
+      <button class="button button-primary" id="openAdd"><span>＋</span> Add appliance</button>
+    </section>
+
+    <section class="metric-grid">
+      <article class="metric-card metric-featured">
+        <div class="metric-top"><span>Total monthly usage</span><span class="metric-icon">ϟ</span></div>
+        <div class="metric-value"><span id="totalKwh">245.40</span><small>kWh</small></div>
+        <div class="metric-foot"><span class="trend-pill">30-day estimate</span><span class="muted">Based on registered appliances</span></div>
+        <div class="feature-decoration"></div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-top"><span>Estimated monthly bill</span><span class="metric-icon pale">₱</span></div>
+        <div class="metric-value dark-value">₱<span id="totalCost">2,944.80</span></div>
+        <div class="metric-foot"><span class="muted">At your electricity rate</span></div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-top"><span>Monthly budget</span><span class="metric-icon pale">◎</span></div>
+        <div class="metric-value dark-value">₱<span id="budgetValue">3,000.00</span></div>
+        <div class="progress-track"><div class="progress-fill" id="budgetProgress"></div></div>
+        <div class="metric-foot"><span id="budgetPercent">98.2% used</span><span class="muted">of budget</span></div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-top"><span>Budget remaining</span><span class="metric-icon pale">↗</span></div>
+        <div class="metric-value dark-value" id="remainingValue">₱55.20</div>
+        <div class="metric-foot"><span class="status-text" id="budgetStatus">Within your monthly budget</span></div>
+      </article>
+    </section>
+
+    <section class="voltage-panel panel" aria-label="Voltage waveform demonstration">
+      <div class="voltage-head">
+        <div>
+          <div class="eyebrow">POWER SIGNAL VISUALIZATION</div>
+          <h2>Voltage waveform monitor</h2>
+          <p>Animated AC signal preview for your WattWise dashboard</p>
+        </div>
+        <div class="signal-status"><span class="signal-pulse"></span> DEMO SIGNAL</div>
+      </div>
+
+      <div class="wave-layout">
+        <div class="wave-chart">
+          <div class="wave-y-labels"><span>+1.0</span><span>0</span><span>−1.0</span></div>
+          <svg class="wave-svg" viewBox="0 0 720 150" preserveAspectRatio="none" role="img" aria-label="Illustrative animated alternating-current sine wave">
+            <defs>
+              <linearGradient id="waveGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#75bd35"/>
+                <stop offset="55%" stop-color="#a3ed2a"/>
+                <stop offset="100%" stop-color="#39b9a2"/>
+              </linearGradient>
+              <linearGradient id="waveArea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8ed34a" stop-opacity=".22"/>
+                <stop offset="100%" stop-color="#8ed34a" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g class="wave-grid">
+              <path d="M0 25H720 M0 62.5H720 M0 100H720 M0 137.5H720"/>
+              <path d="M60 0V150 M180 0V150 M300 0V150 M420 0V150 M540 0V150 M660 0V150"/>
+            </g>
+            <path class="wave-area" d="M0 75 C30 5 60 5 90 75 S150 145 180 75 S240 5 270 75 S330 145 360 75 S420 5 450 75 S510 145 540 75 S600 5 630 75 S690 145 720 75 L720 150 L0 150Z"/>
+            <path class="wave-line wave-line-secondary" d="M0 75 C30 5 60 5 90 75 S150 145 180 75 S240 5 270 75 S330 145 360 75 S420 5 450 75 S510 145 540 75 S600 5 630 75 S690 145 720 75"/>
+            <path class="wave-line wave-line-main" d="M0 75 C30 5 60 5 90 75 S150 145 180 75 S240 5 270 75 S330 145 360 75 S420 5 450 75 S510 145 540 75 S600 5 630 75 S690 145 720 75"/>
+            <circle class="wave-marker" cx="540" cy="75" r="4"/>
+          </svg>
+          <div class="wave-x-labels"><span>0 ms</span><span>5 ms</span><span>10 ms</span><span>15 ms</span><span>20 ms</span></div>
+        </div>
+
+        <div class="wave-metrics">
+          <div class="wave-metric">
+            <span class="wave-metric-icon">ϟ</span>
+            <div><small>REFERENCE VOLTAGE</small><strong>220 <em>V</em></strong></div>
+          </div>
+          <div class="wave-metric">
+            <span class="wave-metric-icon teal">∿</span>
+            <div><small>SIGNAL TYPE</small><strong>AC <em>Wave</em></strong></div>
+          </div>
+          <div class="wave-footnote"><span>ⓘ</span> Illustrative waveform only. Connect a compatible isolated voltage sensor or energy meter to display actual readings.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-grid" id="analysis">
+      <article class="panel usage-panel">
+        <div class="panel-heading">
+          <div><div class="eyebrow">CONSUMPTION BREAKDOWN</div><h2>Appliance usage</h2><p>Monthly electricity consumption by appliance</p></div>
+          <span class="period-tag">30 DAYS</span>
+        </div>
+        <div id="usageBars" class="usage-bars"></div>
+        <div class="chart-footer"><span><i class="legend-dot"></i> Monthly kWh consumption</span><span id="applianceCount">4 appliances registered</span></div>
+      </article>
+
+      <article class="panel settings-panel">
+        <div class="panel-heading">
+          <div><div class="eyebrow">BILLING SETTINGS</div><h2>Electricity rate</h2><p>Set your local cost per kWh</p></div>
+          <span class="settings-symbol">⚙</span>
+        </div>
+        <label class="field-label" for="rateInput">Rate per kWh <span>PHP</span></label>
+        <div class="input-with-prefix"><span>₱</span><input id="rateInput" type="number" min="0" step="0.01" value="12"></div>
+        <label class="field-label budget-label" for="budgetInput">Monthly budget <span>PHP</span></label>
+        <div class="input-with-prefix"><span>₱</span><input id="budgetInput" type="number" min="0" step="0.01" value="3000"></div>
+        <button class="button button-dark full-button" id="saveSettings">Save billing settings <span>→</span></button>
+        <div class="settings-note"><span>ⓘ</span> Estimates use a 30-day billing period.</div>
+      </article>
+    </section>
+
+    <section class="panel appliance-panel" id="appliances">
+      <div class="panel-heading appliance-heading">
+        <div><div class="eyebrow">YOUR HOUSEHOLD DEVICES</div><h2>Registered appliances</h2><p>Sorted by highest monthly energy consumption</p></div>
+        <button class="button button-outline" id="tableAdd">＋ Add appliance</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>APPLIANCE</th><th>POWER RATING</th><th>HOURS / DAY</th><th>MONTHLY USAGE</th><th>EST. MONTHLY COST</th><th></th></tr>
+          </thead>
+          <tbody id="applianceRows"></tbody>
+        </table>
+      </div>
+      <div class="table-bottom"><span id="tableCount">Showing 4 appliances</span><span>Calculation: (Watts × Hours ÷ 1,000) × 30</span></div>
+    </section>
+
+    <section class="panel whatif-panel" id="whatif">
+      <div class="whatif-copy">
+        <div class="eyebrow">SMART SAVINGS TOOL</div>
+        <h2>What if you used less?</h2>
+        <p>Adjust an appliance’s daily operating hours and see how much you could save on your monthly bill.</p>
+        <div class="whatif-tip"><span>✦</span> Try reducing your air conditioner usage by 2 hours.</div>
+      </div>
+
+      <div class="whatif-controls">
+        <label class="field-label" for="whatIfAppliance">Select appliance</label>
+        <select id="whatIfAppliance"></select>
+        <label class="field-label" for="whatIfHours">New daily usage <strong><span id="hoursDisplay">4</span> hours</strong></label>
+        <input type="range" id="whatIfHours" min="0" max="24" step="0.5" value="4">
+        <div class="range-labels"><span>0 hours</span><span>24 hours</span></div>
+        <button class="button button-primary full-button" id="runWhatIf">Calculate potential savings <span>→</span></button>
+      </div>
+
+      <div class="savings-result" id="savingsResult">
+        <div class="result-label">POTENTIAL MONTHLY SAVINGS</div>
+        <div class="savings-amount" id="savingsAmount">₱720.00</div>
+        <p id="savingsDescription">Your estimated bill could be reduced.</p>
+        <div class="result-divider"></div>
+        <div class="result-line"><span>Projected monthly bill</span><strong id="projectedCost">₱2,224.80</strong></div>
+      </div>
+    </section>
+
+    <footer>WattWise <span>•</span> Household Electricity Consumption Analysis and Optimization System <span class="footer-right">ESTIMATES ONLY</span></footer>
+  </main>
+</div>
+
+<!-- Appliance modal -->
+<div class="modal-backdrop" id="applianceModal">
+  <div class="modal">
+    <div class="modal-heading">
+      <div><div class="eyebrow">HOUSEHOLD DEVICE</div><h2 id="modalTitle">Add appliance</h2><p>Enter the appliance's power rating and average daily usage.</p></div>
+      <button class="close-modal" id="closeModal">×</button>
+    </div>
+    <form id="applianceForm">
+      <input type="hidden" id="editId">
+      <label class="field-label" for="applianceName">Appliance name</label>
+      <input class="form-input" id="applianceName" placeholder="e.g. Washing Machine" required maxlength="60">
+      <div class="form-two">
+        <div><label class="field-label" for="applianceWatts">Power rating (watts)</label><input class="form-input" id="applianceWatts" type="number" min="0.1" step="0.1" placeholder="e.g. 500" required></div>
+        <div><label class="field-label" for="applianceHours">Hours per day</label><input class="form-input" id="applianceHours" type="number" min="0" max="24" step="0.5" placeholder="e.g. 4" required></div>
+      </div>
+      <div class="form-hint">Use the wattage printed on the appliance label or manual.</div>
+      <div class="modal-actions">
+        <button type="button" class="button button-outline" id="cancelModal">Cancel</button>
+        <button class="button button-primary" type="submit" id="submitAppliance">Save appliance <span>→</span></button>
+      </div>
+      <div class="form-error" id="formError"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Account modal -->
+<div class="modal-backdrop" id="accountModal">
+  <div class="modal account-modal">
+    <div class="modal-heading">
+      <div><div class="eyebrow">HOUSEHOLD PROFILE</div><h2>Account settings</h2><p>Manage your WattWise household account.</p></div>
+      <button class="close-modal" id="closeAccount">×</button>
+    </div>
+
+    <!-- Account information and logout are managed by app.js -->
+    <div id="accountDetails"></div>
+
+    <form id="accountForm">
+      <label class="field-label" for="householdName">Household name</label>
+      <input class="form-input" id="householdName" maxlength="45" placeholder="e.g. Garcia Household" required>
+      <div class="account-info-card">
+        <span class="account-info-icon">⌂</span>
+        <div><strong>Household workspace</strong><small>Your appliance records and billing settings are associated with your WattWise account.</small></div>
+      </div>
+      <div class="account-info-card">
+        <span class="account-info-icon">ϟ</span>
+        <div><strong>Energy estimates</strong><small>Calculations use appliance wattage, daily hours, a 30-day month, and your electricity rate.</small></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="button button-outline" id="cancelAccount">Cancel</button>
+        <button class="button button-primary" type="submit">Save profile <span>→</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Data status modal -->
+<div class="modal-backdrop" id="dataModal">
+  <div class="modal data-modal">
+    <div class="modal-heading">
+      <div><div class="eyebrow">CONNECTION & STORAGE</div><h2>Data source status</h2><p>See where your WattWise dashboard information comes from.</p></div>
+      <button class="close-modal" id="closeData">×</button>
+    </div>
+
+    <div class="data-status-card">
+      <span class="data-status-large"><span class="status-dot"></span></span>
+      <div><strong>WattWise account database</strong><small>Your household information is associated with your signed-in account.</small></div>
+      <span class="status-chip">AVAILABLE</span>
+    </div>
+
+    <div class="data-detail-row"><span>Appliance records</span><strong>Account-specific</strong></div>
+    <div class="data-detail-row"><span>Billing settings</span><strong>Account-specific</strong></div>
+    <div class="data-detail-row"><span>Arduino / voltage meter</span><strong class="not-connected">Not connected</strong></div>
+
+    <div class="data-note">Your current dashboard uses the wattage and daily usage values you enter manually. Live voltage and current readings require a compatible meter and a separate hardware connection. The animated waveform is illustrative, not a live measurement.</div>
+
+    <div class="modal-actions">
+      <button type="button" class="button button-outline" id="closeDataBottom">Close</button>
+      <button type="button" class="button button-primary" id="refreshData">Refresh dashboard <span>↻</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
